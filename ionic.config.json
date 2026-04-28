@@ -1,0 +1,7 @@
+{
+  "name": "RAMALANCUACA",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

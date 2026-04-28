@@ -1,0 +1,151 @@
+<ion-content [fullscreen]="true">
+  <!-- Dynamic Background Overlay -->
+  <div class="dynamic-bg" [style.background]="getDynamicBg()">
+    <!-- RAIN EFFETCS -->
+    <div *ngIf="weatherAnimType === 'rain'" class="rain-overlay">
+      <div class="drop" style="left: 10%; animation-delay: 0.1s;"></div>
+      <div class="drop" style="left: 20%; animation-delay: 0.5s;"></div>
+      <div class="drop" style="left: 30%; animation-delay: 0.2s;"></div>
+      <div class="drop" style="left: 40%; animation-delay: 0.8s;"></div>
+      <div class="drop" style="left: 50%; animation-delay: 0.3s;"></div>
+      <div class="drop" style="left: 60%; animation-delay: 0.6s;"></div>
+      <div class="drop" style="left: 70%; animation-delay: 0.4s;"></div>
+      <div class="drop" style="left: 80%; animation-delay: 0.9s;"></div>
+      <div class="drop" style="left: 90%; animation-delay: 0.2s;"></div>
+    </div>
+
+    <!-- CLOUDS EFFECTS -->
+    <div *ngIf="weatherAnimType === 'clouds' || weatherAnimType === 'night-clouds' || weatherAnimType === 'rain'" class="clouds-overlay">
+      <div class="cloud cloud1" [class.dark-cloud]="weatherAnimType === 'night-clouds' || weatherAnimType === 'rain'"></div>
+      <div class="cloud cloud2" [class.dark-cloud]="weatherAnimType === 'night-clouds' || weatherAnimType === 'rain'"></div>
+      <div class="cloud cloud3" [class.dark-cloud]="weatherAnimType === 'night-clouds' || weatherAnimType === 'rain'"></div>
+    </div>
+
+    <!-- STARS EFFECTS -->
+    <div *ngIf="weatherAnimType === 'night' || weatherAnimType === 'night-clouds'" class="stars-overlay">
+      <div class="star" style="top: 10%; left: 20%; animation-delay: 0s;"></div>
+      <div class="star" style="top: 25%; left: 80%; animation-delay: 1s;"></div>
+      <div class="star" style="top: 50%; left: 10%; animation-delay: 2s;"></div>
+      <div class="star" style="top: 70%; left: 60%; animation-delay: 0.5s;"></div>
+      <div class="star" style="top: 15%; left: 50%; animation-delay: 1.5s;"></div>
+      <div class="star" style="top: 40%; left: 90%; animation-delay: 0.8s;"></div>
+    </div>
+  </div>
+
+  <div class="main-wrapper">
+    <!-- Header Controls -->
+    <div class="header-nav">
+      <div class="header-title">
+        <ion-icon name="location" style="font-size: 16px; margin-right: 4px;"></ion-icon>
+        <span>Karawang</span>
+      </div>
+      <button class="glass-btn" (click)="getCurrentLocation()" [disabled]="isLocating || loading">
+        <ion-icon name="navigate-outline" [class.spin]="loading"></ion-icon>
+      </button>
+      <button class="glass-btn" (click)="refreshWeather()" [disabled]="loading">
+        <ion-icon name="refresh-outline" [class.spin]="loading"></ion-icon>
+      </button>
+    </div>
+
+    <!-- Main Weather Info -->
+    <div *ngIf="weatherData" class="weather-content ios-weather-layout">
+      
+      <!-- iOS Header (Floating over BG) -->
+      <div class="ios-header">
+        <h2 class="city-name">{{ weatherData.name }}</h2>
+        <h1 class="main-temp">{{ weatherData.main.temp | number:'1.0-0' }}&deg;</h1>
+        <p class="weather-desc">{{ weatherData.weather[0].description | titlecase }}</p>
+        <div class="h-l-box">
+          <span>Negara: {{ weatherData.sys.country }}</span>
+        </div>
+
+        <!-- Weather Advice Card -->
+        <div class="advice-card ios-glass" *ngIf="weatherData.advice">
+          <ion-icon name="bulb-outline"></ion-icon>
+          <p>{{ weatherData.advice }}</p>
+        </div>
+      </div>
+
+      <!-- Detail Grid (Glassmorphism iOS style) -->
+      <div class="detail-grid">
+        <div class="detail-item ios-glass">
+          <ion-icon name="water"></ion-icon>
+          <div class="label">KELEMBAPAN</div>
+          <div class="val">{{ weatherData.main.humidity }}%</div>
+        </div>
+        <div class="detail-item ios-glass">
+          <ion-icon name="paper-plane"></ion-icon>
+          <div class="label">ANGIN</div>
+          <div class="val">{{ weatherData.wind.speed }} m/s</div>
+        </div>
+        <div class="detail-item ios-glass">
+          <ion-icon name="speedometer"></ion-icon>
+          <div class="label">TEKANAN</div>
+          <div class="val">{{ weatherData.main.pressure }} hPa</div>
+        </div>
+        <div class="detail-item ios-glass">
+          <ion-icon name="sunny"></ion-icon>
+          <div class="label">INDEKS UV</div>
+          <div class="val">{{ weatherData.uvIndex | number:'1.1-1' }}</div>
+        </div>
+        <div class="detail-item ios-glass">
+          <ion-icon name="leaf"></ion-icon>
+          <div class="label">UDARA (AQI)</div>
+          <div class="val">{{ weatherData.aqi }}</div>
+        </div>
+        <div class="detail-item ios-glass">
+          <ion-icon name="eye"></ion-icon>
+          <div class="label">JARAK PANDANG</div>
+          <div class="val">{{ weatherData.visibility | number:'1.0-0' }} KM</div>
+        </div>
+      </div>
+
+      <!-- Hourly Forecast -->
+      <div class="forecast-section" *ngIf="weatherData.hourly">
+        <h3 class="section-title">Prediksi Per Jam</h3>
+        <div class="hourly-scroll">
+          <div class="hourly-item ios-glass" *ngFor="let hour of weatherData.hourly">
+            <span class="hour-time">{{ hour.time | date:'HH:mm' }}</span>
+            <img [src]="'https://openweathermap.org/img/wn/' + hour.icon + '.png'" alt="icon">
+            <span class="hour-temp">{{ hour.temp | number:'1.0-0' }}&deg;</span>
+            <span class="hour-pop" *ngIf="hour.pop > 0">
+              <ion-icon name="water" size="small"></ion-icon> {{ hour.pop }}%
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4-Day Forecast -->
+      <div class="forecast-section daily-section" *ngIf="weatherData.daily">
+        <h3 class="section-title">Ramalan 4 Hari Ke Depan</h3>
+        <div class="daily-list">
+          <div class="daily-item ios-glass" *ngFor="let day of weatherData.daily; let i = index">
+            <span class="day-name">
+              {{ i === 0 ? 'Besok' : (i + 1) + ' Hari Lagi' }}
+            </span>
+            <div class="day-info">
+              <img [src]="'https://openweathermap.org/img/wn/' + day.icon + '.png'" alt="icon">
+              <div class="desc-box">
+                <span class="day-desc">{{ day.desc }}</span>
+                <span class="day-pop" *ngIf="day.pop > 0">
+                   <ion-icon name="water" size="small"></ion-icon> {{ day.pop }}%
+                </span>
+              </div>
+            </div>
+            <div class="day-temps">
+              <span class="max">{{ day.maxTemp | number:'1.0-0' }}&deg;</span>
+              <span class="min">{{ day.minTemp | number:'1.0-0' }}&deg;</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Skeleton Loading -->
+    <div *ngIf="loading" class="weather-content">
+      <div class="main-card neo-glass" style="height: 300px; display: flex; align-items: center; justify-content: center;">
+        <ion-spinner name="crescent" color="primary"></ion-spinner>
+      </div>
+    </div>
+  </div>
+</ion-content>
