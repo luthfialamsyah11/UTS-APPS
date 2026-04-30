@@ -2,6 +2,6 @@
 <resources>
     <string name="app_name">RAMALANCUACA</string>
     <string name="title_activity_main">RAMALANCUACA</string>
-    <string name="package_name">io.ionic.starter</string>
-    <string name="custom_url_scheme">io.ionic.starter</string>
+    <string name="package_name">com.developer.skyglass</string>
+    <string name="custom_url_scheme">com.developer.skyglass</string>
 </resources>
