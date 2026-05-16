@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace = "com.developer.skyglass"
+    namespace = "com.developer.skyglass1"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.developer.skyglass"
+        applicationId "com.developer.skyglass1"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 2

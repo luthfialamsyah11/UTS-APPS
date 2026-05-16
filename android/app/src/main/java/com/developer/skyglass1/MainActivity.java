@@ -1,4 +1,4 @@
-package com.developer.skyglass;
+package com.developer.skyglass1;
 
 import com.getcapacitor.BridgeActivity;
 
